@@ -2,7 +2,7 @@ import { generateNarrative } from "@/lib/narrative-ai";
 import { actionSchema } from "@/lib/validation/action-schema";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest): Promise<Object> {
+export async function POST(request: NextRequest): Promise<Response> {
     try {
         const { action, context } = await request.json();
         // Validate the action

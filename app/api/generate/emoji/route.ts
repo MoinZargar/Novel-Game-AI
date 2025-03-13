@@ -1,7 +1,7 @@
 import { generateCharacterPrompt } from "@/lib/prompt";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest):Promise<Object> {
+export async function POST(request: NextRequest): Promise<Response> {
     try {
         const { action } = await request.json();
         const input = generateCharacterPrompt + action;

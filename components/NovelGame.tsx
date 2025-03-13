@@ -11,7 +11,6 @@ import type { ActionType } from "@/lib/types/forms"
 import type { NarrativeInput } from "@/lib/types/narrative"
 import { GameScene } from "@/components/GameScene"
 import axios from "axios"
-import { set } from "zod"
 
 export function NovelGame() {
     const [context, setContext] = useState<NarrativeInput[]>([])

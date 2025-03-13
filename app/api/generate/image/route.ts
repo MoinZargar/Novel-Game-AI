@@ -5,7 +5,7 @@ import { generateImagePrompt } from '@/lib/prompt';
 
 
 
-export async function POST(request: NextRequest): Promise<Object> {
+export async function POST(request: NextRequest):  Promise<Response> {
   try {
 
     const { action } = await request.json();
