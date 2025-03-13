@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI-Powered Visual Novel Game
 
-## Getting Started
+An interactive visual novel game that leverages AI to generate dynamic background images, emojis, and narrative text based on the story context.
 
-First, run the development server:
+## Project Setup
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Using Docker
+
+```sh
+docker build -t novel .
+docker run -d -p 3000:3000 novel
+```
+ Open the application in your browser:
+  ```sh
+   http://localhost:3000
+   ```
+
+### Manual Setup
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/MoinZargar/Novel-Game-AI.git
+   cd Novel-Game-AI
+   ```
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+3. Set up the environment variables by creating a `.env` file.
+4. Run the development server:
+   ```sh
+   npm run dev
+   ```
+5. Open the application in your browser:
+  ```sh
+   http://localhost:3000
+   ```
+
+## Environment Variables
+
+Create a `.env` file in the root of the project and configure the following API keys:
+
+```
+FAL_KEY=your_flux_model_key  # Used for AI-based image generation, get it from https://fal.ai/
+APIVERVE_EMOJI_KEY=your_apiverve_emoji_key  # Used to generate emojis from text, get it from https://apiverve.com/
+APIVERVE_API_ENDPOINT=https://api.apiverve.com/v1/texttoemoji  # API endpoint for text-to-emoji conversion
+GEMINI_API_KEY=your_gemini_api_key  # Used to generate narrative text, get it from https://aistudio.google.com/
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## API Routes
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The backend exposes the following API endpoints:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Route                     | Description                                 |
+| ------------------------- | ------------------------------------------- |
+| `/api/generate/image`     | Handles AI-based image generation from text |
+| `/api/generate/emoji`     | Converts text into relevant emojis          |
+| `/api/generate/narrative` | Generates AI-based narrative text           |
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Frontend**: Next.js, TypeScript, Tailwind CSS, ShadCN
+- **Validation**: Zod
+- **Forms Handling**: React Hook Form
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
