@@ -7,84 +7,87 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { actionSchema } from "@/lib/validation/action-schema"
-import { ActionType } from "@/lib/types/forms"
-import { NarrativeInput } from "@/lib/types/narrative"
+import type { ActionType } from "@/lib/types/forms"
+import type { NarrativeInput } from "@/lib/types/narrative"
 import axios from "axios"
 import { GameScene } from "@/components/GameScene"
 
 export function NovelGame() {
-    const [context, setContext] = useState<NarrativeInput[]>([])
-    const [narrative, setNarrative] = useState<string>("")
-    const [backgroundImage, setBackgroundImage] = useState<string>("")
-    const [character, setCharacter] = useState<string>("")
-    const form = useForm<ActionType>({
-        resolver: zodResolver(actionSchema),
-        defaultValues: {
-            action: "",
-        },
-    })
+  const [context, setContext] = useState<NarrativeInput[]>([])
+  const [narrative, setNarrative] = useState<string>("")
+  const [backgroundImage, setBackgroundImage] = useState<string>("")
+  const [character, setCharacter] = useState<string>("")
+  const form = useForm<ActionType>({
+    resolver: zodResolver(actionSchema),
+    defaultValues: {
+      action: "",
+    },
+  })
 
-    const onSubmit = async (data: ActionType) => {
-        try {
-            const input = { ...data, context }
+  const onSubmit = async (data: ActionType) => {
+    try {
+      const input = { ...data, context }
 
-            // Generate narrative based on the action
-            const response = await axios.post("/api/generate/narrative", input)
-            const narrativeResponse = response.data.response
-            setNarrative(narrativeResponse?.narrative)
-            console.log(narrativeResponse)
-            // if there is need to update the background image
-            if(narrativeResponse?.backgroundUpdate){
-                const imageResponse = await axios.post("/api/generate/image", data)
-                const imageURL = imageResponse.data.imageURL
-                setBackgroundImage(imageURL)
-            }
+      // Generate narrative based on the action
+      const response = await axios.post("/api/generate/narrative", input)
+      const narrativeResponse = response.data.response
+      setNarrative(narrativeResponse?.narrative)
+ 
 
-            // if there is need to update the character
-            if (narrativeResponse?.characterUpdate) {
-                const response = await axios.post("/api/generate/emoji", data)
-                const characterResponse = response.data.response
-                const character = characterResponse?.data?.emojis[0]
-                console.log(character)
-            }
+    //   // if there is need to update the background image
+      if (narrativeResponse?.backgroundUpdate) {
+        const imageResponse = await axios.post("/api/generate/image", data)
+        const imageURL = imageResponse.data.imageURL
+        setBackgroundImage(imageURL)
+      }
 
-            setContext((prev) => [...prev, { role: "user", parts: [{ text: data.action }] }])
-        } 
-        catch (error) {
-            console.error(error)
-        }
-        finally {   
-            form.reset()
-        }
+      // if there is need to update the character
+      if (narrativeResponse?.characterUpdate) {
+        const response = await axios.post("/api/generate/emoji", data)
+        const characterResponse = response.data.response
+        const character = characterResponse?.data?.emojis[0]
+        setCharacter(character)
+        
+      }
+
+      setContext((prev) => [...prev, { role: "user", parts: [{ text: data.action }] }])
+    } catch (error) {
+      console.error(error)
+    } finally {
+      form.reset()
     }
+  }
 
-    return (
-        <div className="border rounded-lg overflow-hidden shadow-md">
-            <div className="bg-white p-4 border-t">
-                <p className="text-gray-800">{narrative}</p>
-            </div>
-            <GameScene backgroundSrc={backgroundImage} characterSrc={character} />
-            <div className="p-2 bg-white border-t">
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="flex space-x-2">
-                        <FormField
-                            control={form.control}
-                            name="action"
-                            render={({ field }) => (
-                                <FormItem className="flex-1">
-                                    <FormControl>
-                                        <Input placeholder="Type your next action..." {...field} className="w-full" />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <Button type="submit" className="bg-blue-500 hover:bg-blue-600">
-                            Send
-                        </Button>
-                    </form>
-                </Form>
-            </div>
-        </div>
-    )
+  return (
+    <div className="flex flex-col h-full border rounded-lg overflow-hidden shadow-md">
+       
+      <div className="flex-grow">
+        <GameScene backgroundSrc={backgroundImage} character={character} />
+      </div>
+      <div className="bg-white p-4 border-t overflow-y-auto flex-shrink-0 max-h-[30%]">
+        <p className="text-gray-800">{narrative}</p>
+      </div>
+      <div className="p-3 bg-white border-t flex-shrink-0">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex space-x-2">
+            <FormField
+              control={form.control}
+              name="action"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormControl>
+                    <Input placeholder="Type your next action..." {...field} className="w-full" />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="bg-blue-500 hover:bg-blue-600">
+              Send
+            </Button>
+          </form>
+        </Form>
+      </div>
+    </div>
+  )
 }
 

@@ -1,20 +1,15 @@
 import { BackgroundImage } from "@/components/BackgroundImage"
-// import { CharacterImage } from "./CharacterImage"
-import { GameSceneProps } from "@/lib/types/game-scene"
+import { CharacterImage } from "@/components/CharacterImage"
+import type { GameSceneProps } from "@/lib/types/game-scene"
 
-export function GameScene({
-  backgroundSrc,
-  characterSrc,
-}: GameSceneProps) {
+export function GameScene({ backgroundSrc, character }: GameSceneProps) {
   return (
-    <div className="relative h-64 overflow-hidden rounded-t-lg">
-      
-      <div className="absolute inset-0 w-full h-full">
+    <div className="relative w-full h-full overflow-hidden">
+      <div className="absolute inset-0">
         <BackgroundImage src={backgroundSrc} alt="Background Image" />
       </div>
 
-     
-      {/* <CharacterImage src={characterSrc} alt="Character Image" /> */}
+      <CharacterImage src={character} alt="Character Image" />
     </div>
   )
 }

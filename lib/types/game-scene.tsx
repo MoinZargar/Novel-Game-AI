@@ -1,4 +1,9 @@
 export interface GameSceneProps {
     backgroundSrc?: string;
-    characterSrc?: string;
+    character?: string;
+}
+
+export interface CharacterImageProps {
+    src?: string 
+    alt?: string
 }
