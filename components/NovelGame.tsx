@@ -7,11 +7,15 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { actionSchema } from "@/lib/validation/action-schema"
-import { ActionType } from "@/lib/validation/types/forms"
+import { ActionType } from "@/lib/types/forms"
+import { NarrativeInput } from "@/lib/types/narrative"
 import axios from "axios"
+import { set } from "zod"
 
 export function NovelGame() {
-
+    const [context, setContext] = useState<NarrativeInput[]>([])
+    const [backgroundImage, setBackgroundImage] = useState<string>("")
+    const [character, setCharacter] = useState<string>("")
     const form = useForm<ActionType>({
         resolver: zodResolver(actionSchema),
         defaultValues: {
@@ -20,7 +24,29 @@ export function NovelGame() {
     })
 
     const onSubmit = async (data: ActionType) => {
-        console.log(data)
+        try {
+            const input = {...data, context}
+            // Generate narrative based on the action
+            const response = await axios.post("/api/generate/narrative", input)
+            const narrativeResponse = response.data.response
+
+            // if there is need to update the background image
+            // if(narrativeResponse?.backgroundUpdate){
+            //     const imageResponse = await axios.post("/api/generate/image", data)
+            //     const imageURL = imageResponse.data.imageURL
+            //     setBackgroundImage(imageURL)
+            // }
+            // if there is need to update the character
+            if(narrativeResponse?.characterUpdate){
+               const response = await axios.post("/api/generate/emoji", data)
+               const characterResponse = response.data.response
+               const character = characterResponse?.data?.emojis[0]
+               console.log(character)
+            }
+            setContext((prev) => [...prev, { role: "user", parts: [{ text: data.action }] }])
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     return (
